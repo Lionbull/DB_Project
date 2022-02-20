@@ -7,6 +7,7 @@ def main():
     current_user = input("Enter your user ID: ")
     connection = sqlite3.connect('database.db')
     while (True):
+        print("////////////////////////////////")
         print("\nWhat do you want to do?")
         print("1) View my orders")
         print("2) View my shopping cart")
@@ -49,6 +50,7 @@ def vieworders(connection, customer):
                     ON ShoppingCart.ID_SC=Orders.ID_SC
                     WHERE ShoppingCart.ID_Customer=?""",(customer,))
     orders = cursor.fetchall()
+    print("\n////////////////////////////////")
     if len(orders) == 0:
         print("You haven't ordered anything yet!\n")
     else:
@@ -62,7 +64,8 @@ def vieworders(connection, customer):
 def viewshoppingcart(connection, customer):
     """This function allow you view shopping cart"""
     cursor = connection.cursor()
-    print("\nYour latest shopping cart:")
+    print("\n////////////////////////////////")
+    print("Your latest shopping cart:")
     cursor.execute('SELECT MAX(ID_SC) FROM ShoppingCart WHERE ID_Customer=?',(customer,))
     latest_sc = cursor.fetchall()[0][0]
 
@@ -88,7 +91,8 @@ def viewmyinfo(connection, customer):
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM Customer WHERE ID_Customer=?',(customer,))
     rows = cursor.fetchall()
-    print("\nYour information:\n")
+    print("\n////////////////////////////////")
+    print("Your information:\n")
     for row in rows:
         print("Customer ID:",row[0])
         print("Name:",row[2])
@@ -98,7 +102,8 @@ def viewmyinfo(connection, customer):
 def editinformation(connection, customer):
     cursor = connection.cursor()
     while True:
-        print("\nWhat would you like to edit?")
+        print("\n////////////////////////////////")
+        print("What would you like to edit?")
         print("1) Name")
         print("2) SSN")
         print("3) Address")
@@ -127,7 +132,8 @@ def editinformation(connection, customer):
 def viewproducts(connection):
     cursor = connection.cursor()
     while True:
-        print("\nWhat would you like to view?")
+        print("\n////////////////////////////////")
+        print("What would you like to view?")
         print("1) Phones")
         print("2) Tablets")
         print("3) The most expensive product")
@@ -150,12 +156,15 @@ def viewproducts(connection):
                 print("{} {}, Memory: {}, Release year: {}".format(row[0],row[1],row[2],row[3]))
             break
         elif selection == 3:
-            cursor.execute("SELECT Manufacturer, Model, Memory, Release_Year FROM Product WHERE MAX(Price)")
-            product = cursor.fetchall()
-            print("\nThe most expensive product is:")
-            print("Name: {} {}\nMemory: {}\nRelease year: {}\nPrice:".format(product[0][1],product[0][2],product[0][3],product[0][4],product[0][5]))
+            cursor.execute("SELECT Manufacturer, Model, Memory, Release_Year, Price FROM Product WHERE Price=(SELECT MAX(Price) FROM Product)")
+            product = cursor.fetchall()[0]
+            print("The most expensive product is:")
+            print("\nName: {} {}\nMemory: {}\nRelease year: {}\nPrice: {}".format(product[0],product[1],product[2],product[3],product[4]))
         elif selection == 4:
-            pass
+            cursor.execute("SELECT Manufacturer, Model, Memory, Release_Year, Price FROM Product WHERE Price=(SELECT MIN(Price) FROM Product)")
+            product = cursor.fetchall()[0]
+            print("The least expensive product is:")
+            print("\nName: {} {}\nMemory: {}\nRelease year: {}\nPrice: {}".format(product[0],product[1],product[2],product[3],product[4]))
         elif selection == 0:
             break
         else:
@@ -168,7 +177,8 @@ def createnewsc(connection, customer):
     latest_sc+=1
     product_list=[]
     while True:
-        print("\nWhat would you like to add?")
+        print("\n////////////////////////////////")
+        print("What would you like to add?")
         print("1) Phone")
         print("2) Tablet")
         print("3) Add selected")
@@ -231,15 +241,15 @@ def createbokeh(connection):
     for i in cursor.fetchall():
         prices.append(i[0])
     
-    sorted_names = sorted(names, key=lambda x: prices[names.index(x)])
 
-    p = figure(x_range=sorted_names, height=500, width=2500, title="Product Prices",
+    p = figure(x_range=names, height=500, width=750, title="Product Prices",
            toolbar_location=None, tools="")
 
     p.vbar(x=names, top=prices, width=0.9)
 
     p.xgrid.grid_line_color = None
     p.y_range.start = 0
+    p.xaxis.major_label_orientation = "vertical"
 
     show(p)
 

@@ -50,6 +50,8 @@ CREATE TABLE ProductsInShoppingCart (
     FOREIGN KEY (Product) REFERENCES Product (ID_Product)
 );
 
+CREATE INDEX ProductIndex ON Product(Model);
+CREATE INDEX OrdersIndex ON Orders(ID_Order);
 
 
 --Customer ID has no special pattern
