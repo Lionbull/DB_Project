@@ -1,4 +1,4 @@
-# DB_Project
+# Instructions for running the program
 Project for "Basics of Database Systems" course.
 
 To run the program on Windows you should execute next lines in PowerShell:
