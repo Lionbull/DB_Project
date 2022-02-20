@@ -1,40 +1,27 @@
 DROP TABLE IF EXISTS Customer;
 CREATE TABLE Customer (
     ID_Customer INTEGER PRIMARY KEY AUTOINCREMENT,
-    Social_Number TEXT NOT NULL,
-    Name TEXT NOT NULL,
-    Address TEXT NOT NULL
+    Social_Number VARCHAR(12) NOT NULL,
+    Name VARCHAR(30) NOT NULL,
+    Address VARCHAR(30) NOT NULL
 );
 
-DROP TABLE IF EXISTS Tablet;
-CREATE TABLE Tablet (
-    ID_Tablet INT NOT NULL PRIMARY KEY,
-    Manufacturer TEXT NOT NULL,
-    Model TEXT NOT NULL,
-    Memory INT NOT NULL,
-    Release_Year INT NOT NULL
-);
-
-DROP TABLE IF EXISTS Phone;
-CREATE TABLE Phone (
-    ID_Phone INT NOT NULL PRIMARY KEY,
-    Manufacturer TEXT NOT NULL,
-    Model TEXT NOT NULL,
-    Memory INT NOT NULL,
-    Release_Year INT NOT NULL
-);
 
 DROP TABLE IF EXISTS Product;
 CREATE TABLE Product (
     ID_Product INT NOT NULL PRIMARY KEY,
+    Manufacturer VARCHAR(10) NOT NULL,
+    Model VARCHAR(20) NOT NULL,
+    Memory INT NOT NULL,
+    Release_Year INT NOT NULL,
     Price INT NOT NULL
 );
 
 DROP TABLE IF EXISTS ShippingMethod;
 CREATE TABLE ShippingMethod (
     ID_SM INT NOT NULL PRIMARY KEY,
-    Shipper TEXT NOT NULL,
-    Type TEXT
+    Shipper VARCHAR(15) NOT NULL,
+    Type VARCHAR(6)
 );
 
 DROP TABLE IF EXISTS ShoppingCart;
@@ -50,7 +37,7 @@ CREATE TABLE Orders (
     ID_Order INT NOT NULL PRIMARY KEY,
     ID_SC INT NOT NULL,
     Shipping INT NOT NULL,
-    Date TEXT NOT NULL,
+    Date VARCHAR(11) NOT NULL,
     FOREIGN KEY (ID_SC) REFERENCES ShoppingCart (ID_SC),
     FOREIGN KEY (Shipping) REFERENCES ShippingMethod (ID_SM)
 );
@@ -63,6 +50,8 @@ CREATE TABLE ProductsInShoppingCart (
     FOREIGN KEY (Product) REFERENCES Product (ID_Product)
 );
 
+CREATE INDEX ProductIndex ON Product(Model);
+CREATE INDEX OrdersIndex ON Orders(ID_Order);
 
 
 --Customer ID has no special pattern
@@ -91,76 +80,38 @@ VALUES
 
 
 
---ID_Tablet has pattern "11XX"
-INSERT INTO Tablet (ID_Tablet, Manufacturer, Model, Memory, Release_Year)
+--ID_Product for tablets has pattern "11XX"
+--ID_Product for phones has pattern "22XX"
+INSERT INTO Product (ID_Product, Manufacturer, Model, Memory, Release_Year, Price)
 VALUES
-    (1101, "Apple", "iPad Air", "64", 2020),
-    (1102, "Apple", "iPad Air", "32", 2020),
-    (1103, "Apple", "iPad Pro", "128", 2021),
-    (1104, "Apple", "iPad Pro", "64", 2021),
-    (1105, "Apple", "iPad Mini", "64", 2021),
-    (1106, "Apple", "iPad Mini", "32", 2021),
-    (1107, "Samsung", "Galaxy Tab S5E", "128", 2020),
-    (1108, "Samsung", "Galaxy Tab S5E", "64", 2020),
-    (1109, "Microsoft", "Surface Pro 8", "128", 2019),
-    (1110, "Samsung", "Galaxy Tab S7 Plus", "64", 2019),
-    (1111, "Xiaomi", "Pad 5", "32", 2020),
-    (1112, "Samsung", "Galaxy Tab S6", "32", 2018);
-
-
-
---ID_Phone has pattern "22XX"
-INSERT INTO Phone (ID_Phone, Manufacturer, Model, Memory, Release_Year)
-VALUES
-    (2201, "Apple", "iPhone 13 Pro", "128", 2021),
-    (2202, "Apple", "iPhone 13", "64", 2021),
-    (2203, "Apple", "iPhone 12 Pro", "128", 2019),
-    (2204, "Apple", "iPhone 12", "64", 2019),
-    (2205, "Apple", "iPhone 11 Pro", "128", 2018),
-    (2206, "Apple", "iPhone 11", "64", 2018),
-    (2207, "Asus", "ROG Phone 5s", "128", 2020),
-    (2208, "Xiaomi", "Mix 4", "32", 2020),
-    (2209, "Xiaomi", "11T Pro", "128", 2021),
-    (2210, "Google", "Pixel 6", "64", 2020),
-    (2211, "Sony", "Xperia 5 III", "128", 2019),
-    (2212, "Motorola", "Edge 20 Pro", "32", 2018),
-    (2213, "Xiaomi", "11 Lite 5G NE", "16", 2021),
-    (2214, "Honor", "50", "64", 2020),
-    (2215, "Huawei", "Nova 9", "32", 2019),
-    (2216, "realme", "GT Neo 2", "64", 2020);
-
-
-
-INSERT INTO Product (ID_Product, Price)
-VALUES
-    (1101, 600),
-    (1102, 500),
-    (1103, 800),
-    (1104, 650),
-    (1105, 400),
-    (1106, 350),
-    (1107, 250),
-    (1108, 225),
-    (1109, 900),
-    (1110, 200),
-    (1111, 150),
-    (1112, 100),
-    (2201, 1100),
-    (2202, 1000),
-    (2203, 900),
-    (2204, 850),
-    (2205, 850),
-    (2206, 800),
-    (2207, 1200),
-    (2208, 400),
-    (2209, 600),
-    (2210, 900),
-    (2211, 450),
-    (2212, 300),
-    (2213, 250),
-    (2214, 300),
-    (2215, 200),
-    (2216, 400);
+    (1101, "Apple", "iPad Air", "64", 2020, 600),
+    (1102, "Apple", "iPad Air (1)", "32", 2020, 500),
+    (1103, "Apple", "iPad Pro", "128", 2021, 800),
+    (1104, "Apple", "iPad Pro (1)", "64", 2021, 650),
+    (1105, "Apple", "iPad Mini", "64", 2021, 400),
+    (1106, "Apple", "iPad Mini (1)", "32", 2021, 350),
+    (1107, "Samsung", "Galaxy Tab S5E", "128", 2020, 250),
+    (1108, "Samsung", "Galaxy Tab S5E (1)", "64", 2020, 225),
+    (1109, "Microsoft", "Surface Pro 8", "128", 2019, 900),
+    (1110, "Samsung", "Galaxy Tab S7 Plus", "64", 2019, 200),
+    (1111, "Xiaomi", "Pad 5", "32", 2020, 150),
+    (1112, "Samsung", "Galaxy Tab S6", "32", 2018, 100),
+    (2201, "Apple", "iPhone 13 Pro", "128", 2021, 1100),
+    (2202, "Apple", "iPhone 13", "64", 2021, 1000),
+    (2203, "Apple", "iPhone 12 Pro", "128", 2019, 900),
+    (2204, "Apple", "iPhone 12", "64", 2019, 850),
+    (2205, "Apple", "iPhone 11 Pro", "128", 2018, 850),
+    (2206, "Apple", "iPhone 11", "64", 2018, 800),
+    (2207, "Asus", "ROG Phone 5s", "128", 2020, 1200),
+    (2208, "Xiaomi", "Mix 4", "32", 2020, 400),
+    (2209, "Xiaomi", "11T Pro", "128", 2021, 600),
+    (2210, "Google", "Pixel 6", "64", 2020, 900),
+    (2211, "Sony", "Xperia 5 III", "128", 2019, 450),
+    (2212, "Motorola", "Edge 20 Pro", "32", 2018, 300),
+    (2213, "Xiaomi", "11 Lite 5G NE", "16", 2021, 250),
+    (2214, "Honor", "50", "64", 2020, 300),
+    (2215, "Huawei", "Nova 9", "32", 2019, 200),
+    (2216, "realme", "GT Neo 2", "64", 2020, 400);
 
 
 
