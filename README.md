@@ -1,5 +1,5 @@
 # DB_Project
-Project for "Basics of Database Systems" course
+Project for "Basics of Database Systems" course.
 
 To run the program on Windows you should execute next lines in PowerShell:
 ```
