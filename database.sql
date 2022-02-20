@@ -38,8 +38,16 @@ CREATE TABLE Orders (
     ID_SC INT NOT NULL,
     Shipping INT NOT NULL,
     Date VARCHAR(11) NOT NULL,
+    ID_Payment INT NOT NULL,
     FOREIGN KEY (ID_SC) REFERENCES ShoppingCart (ID_SC),
-    FOREIGN KEY (Shipping) REFERENCES ShippingMethod (ID_SM)
+    FOREIGN KEY (Shipping) REFERENCES ShippingMethod (ID_SM),
+    FOREIGN KEY (ID_Payment) REFERENCES Payment (ID_Payment)
+);
+
+DROP TABLE IF EXISTS Payment;
+CREATE TABLE Payment (
+    ID_Payment INT NOT NULL PRIMARY KEY,
+    P_Method VARCHAR(15)
 );
 
 DROP TABLE IF EXISTS ProductsInShoppingCart;
@@ -148,18 +156,26 @@ VALUES
 
 
 --ID_Order has pattern "55XX"
-INSERT INTO Orders (ID_Order, ID_SC, Shipping, Date)
+INSERT INTO Orders (ID_Order, ID_SC, Shipping, Date, ID_Payment)
 VALUES
-    (5501, 4401, 3301, "07/01/2019"),
-    (5502, 4403, 3301, "16/03/2019"),
-    (5503, 4402, 3301, "07/04/2019"),
-    (5504, 4407, 3302, "18/07/2019"),
-    (5505, 4408, 3301, "10/01/2020"),
-    (5506, 4405, 3301, "05/09/2020"),
-    (5507, 4411, 3304, "29/07/2021"),
-    (5508, 4409, 3303, "08/12/2021"),
-    (5509, 4410, 3301, "10/03/2022"),
-    (5510, 4412, 3305, "16/10/2022");
+    (5501, 4401, 3301, "07/01/2019", 6601),
+    (5502, 4403, 3301, "16/03/2019", 6602),
+    (5503, 4402, 3301, "07/04/2019", 6601),
+    (5504, 4407, 3302, "18/07/2019", 6601),
+    (5505, 4408, 3301, "10/01/2020", 6601),
+    (5506, 4405, 3301, "05/09/2020", 6603),
+    (5507, 4411, 3304, "29/07/2021", 6601),
+    (5508, 4409, 3303, "08/12/2021", 6601),
+    (5509, 4410, 3301, "10/03/2022", 6602),
+    (5510, 4412, 3305, "16/10/2022", 6601);
+
+
+--ID_Payment has pattern "66XX"
+INSERT INTO Payment (ID_Payment, P_Method)
+VALUES
+    (6601, "Visa"),
+    (6602, "MasterCard"),
+    (6603, "Klarna");
 
 INSERT INTO ProductsInShoppingCart (Shoppingcart, Product)
 VALUES
